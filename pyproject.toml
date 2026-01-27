@@ -1,0 +1,49 @@
+[project]
+name = "parcsann-v3"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ipykernel>=7.1.0",
+    "jupyter>=1.1.1",
+    "loguru>=0.7.3",
+    "pandas>=3.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "nbstripout>=0.9.0",
+    "pre-commit>=4.5.1",
+    "ruff>=0.14.14",
+]
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+unfixable = []
+select = [
+    "F",   # pyflakes: unused imports, undefined names
+    "E",   # pycodestyle: formatting errors
+    "W",   # pycodestyle warnings
+    "ANN", # type annotation rules
+    "RET", # return statement checks
+    "S",   # security-related rules
+    "TRY", # try-except rules
+]
+ignore = [
+    "D100","D101","D102","D103","D104","D107","D205", # docstrings
+    "COM812",                                         # conflicts with formatter
+    "D203","D211","D212","D213"                       # incompatible blank-line & summary rules
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
