@@ -9,6 +9,8 @@ dependencies = [
     "jupyter>=1.1.1",
     "loguru>=0.7.3",
     "pandas>=3.0.0",
+    "scikit-learn>=1.8.0",
+    "tqdm>=4.67.1",
 ]
 
 [dependency-groups]
