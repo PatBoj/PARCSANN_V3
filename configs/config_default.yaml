@@ -1,32 +1,90 @@
-project:
-  name: "demand_forecasting"
-  seed: 42
-  output_dir: "outputs/"
+# ======================================================================================================================
+# INPUT FILES LOCATION AND SIMPLE TRANSFORMATIONS
+# ======================================================================================================================
 
-data:
-  train_path: "data/train.csv"
-  test_path: "data/test.csv"
-  target_column: "ACTUALS"
-  date_column: "DATE"
+input_data_dir: data
 
-features:
-  lag_features: [1, 7, 14]
-  rolling_windows: [7, 30]
-  use_holidays: true
 
-model:
-  type: "xgboost"
-  params:
-    n_estimators: 500
-    learning_rate: 0.01
-    max_depth: 6
-    subsample: 0.8
+input_output_file_details:
+  file_name: input_output_data.csv
 
-training:
-  batch_size: 32
-  epochs: 50
-  early_stopping_rounds: 20
+  create_single_columns:
+    rho_start: '1 - 1/df.keff_start'
+    rho_max: '1 - 1/df.keff_max'
 
-evaluation:
-  metric: "DPA"
-  backtest_folds: 6
+  create_multiple_columns:
+      rhoN: '1 - 1/df.keffN'
+
+
+monocore_file_details:
+  file_name: monocores_dictionary.xlsx
+  sheet_name: summary
+
+  create_single_columns:
+    rho_start: '1 - 1/df.keff_start'
+    rho_max: '1 - 1/df.keff_max'
+
+
+monocore_evolution_file_details:
+  file_name: monocores_dictionary.xlsx
+  keep_columns:
+    - keff
+    - ppf
+
+  create_single_columns:
+    rho: '1 - 1/df.keff'
+
+
+# ======================================================================================================================
+# MODELING - DATA RELATED
+# ======================================================================================================================
+
+use_normalization_layer: False
+use_one_hot_encoding: True
+use_monocores: False
+
+train_split_ratio: 0.2
+
+# Possible input colum names:
+#
+# - cycle_length_in_days
+# - keff_max
+# - pxy_max
+# - pz_max
+# - keff_start
+# - ppf_start
+# - ppf_max
+# - ppf_end
+# - rho_start
+# - rho_max
+# - keff_evolution
+# - rho_evolution
+# - ppf_evolution
+input_columns:
+  - cycle_length_in_days
+
+# Possible output columns names:
+#
+# - keff_start
+# - keff_max
+# - ppf_start
+# - ppf_max
+# - ppf_end
+# - cycle_length_in_days
+# - rho_start
+# - rho_max
+#
+# - keff_evolution
+# - rho_evolution
+output_columns:
+  - rho_evolution
+
+# ======================================================================================================================
+# MODELING - HYPERPARAMETERS
+# ======================================================================================================================
+
+
+
+# ======================================================================================================================
+# OUTPUT FILE PATH
+# ======================================================================================================================
