@@ -1,8 +1,6 @@
-from dataclasses import dataclass
 from typing import List, Literal, Optional
 import yaml
 from pathlib import Path
-from dataclasses import dataclass, field
 from pydantic import BaseModel, confloat
 
 CONFIG_DIR = Path(__file__).resolve().parent
