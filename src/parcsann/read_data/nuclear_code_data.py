@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 from sklearn.model_selection import train_test_split
+from parcsann.config import ParcsannConfig, InputFileConfig
 
 # simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
@@ -15,7 +16,7 @@ from sklearn.model_selection import train_test_split
 ## UTILS
 
 
-def read_raw_file(file_path: str, sep: str = ",", sheet_name: str | None = None) -> pd.DataFrame:
+def read_raw_file(file_path: str, sep: str | None = None, sheet_name: str | None = None) -> pd.DataFrame:
     """Reads raw .xslx or .csv file.
 
     Args:
@@ -67,12 +68,6 @@ def filter_columns(df: pd.DataFrame, keep_cols: list) -> pd.DataFrame:
     Returns:
         pd.DataFrame: filtered DataFrame.
     """
-    if keep_cols is None:
-        logger.warning(
-            "`keep_cols` keyword was given in the configuration file, but it's empty. Proceeding without changes.",
-        )
-        return df
-
     if not all(column in df.columns for column in keep_cols):
         logger.error(
             f"Columns {set(keep_cols) - set(df.columns)} are given in the `keep_cols`, "
@@ -215,24 +210,26 @@ def create_new_columns(df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     return df
 
 
-def load_dataset(cfg: dict, sheet_name: str | None = None) -> pd.DataFrame:
+def create_single_columns(): ...
+
+
+def create_multiple_columns(): ...
+
+
+def load_dataset(cfg: InputFileConfig) -> pd.DataFrame:
     """Loads and preprocess dataset based on the dictionary.
 
     Args:
-        cfg (dict): a dictionary with a path, colum names, transformations, separator, etc.
-        sheet_name (str, optional): name of the sheet when read from .xlsx file.
+        cfg (InputFileConfig): a dictionary with a path, colum names, transformations, separator, etc.
 
     Returns:
         pd.DataFrame: a DataFrame made of read file.
     """
-    if not sheet_name:
-        sheet_name = cfg.get("sheet_name")
-
-    df = read_raw_file(cfg.get("file_path"), cfg.get("data_sep"), sheet_name)
+    df = read_raw_file(cfg.file_path, cfg.sheet_name)
     df = fix_column_names(df)
-    if cfg.get("keep_cols"):
-        df = filter_columns(df, cfg["keep_cols"])
-    df = create_new_columns(df, cfg.get("create_new_cols"))
+    df = filter_columns(df, cfg.keep_columns)
+    df = create_new_columns(df, cfg.create_single_columns)
+    df = create_new_columns(df, cfg.create_multiple_columns)
 
     logger.info(f"Reading data successful, a dataframe has a shape: {df.shape}.")
 
@@ -311,15 +308,13 @@ def filter_dict_by_suffix(input_dict: dict, suffix: str) -> dict:
 
 
 class CoreData:
-    def __init__(self, cfg_data: ConfigData, cfg: ConfigModeling | None = None) -> None:
+    def __init__(self, cfg: ParcsannConfig) -> None:
         """Preprocess and stores core data. Divides them into `input` and `output` ready to feed to neural network.
         It also stores monocore data.
 
         Args:
-            cfg_data (ConfigData): config that contains information about input files.
-            cfg (ConfigModeling): config that contains information about modeling setting.
+            cfg (ParcsannConfig): a configuration file
         """
-        self.cfg_data = cfg_data
         self.cfg = cfg
 
         self.input_output_data = self.preprocess_input_output_data()
@@ -338,7 +333,7 @@ class CoreData:
     # =================================================================================================================
 
     def preprocess_input_output_data(self) -> pd.DataFrame:
-        input_output_data = load_dataset(self.cfg_data.INPUT_OUTPUT_FILE_DETAILS)
+        input_output_data = load_dataset(self.cfg.input_output_file_details)
         input_output_data = input_output_data.rename(
             columns={col: f"pos{col}" for col in input_output_data.columns if is_string_integer(col)},
         )
