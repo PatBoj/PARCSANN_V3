@@ -77,7 +77,7 @@ input_columns:
 # - keff_evolution
 # - rho_evolution
 output_columns:
-  - rho_evolution
+  - cycle_length_in_days
 
 # ======================================================================================================================
 # MODELING - HYPERPARAMETERS
