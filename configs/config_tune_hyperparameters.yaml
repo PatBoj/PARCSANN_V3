@@ -1,0 +1,27 @@
+neurons: [10, 120]
+activation:
+  - relu
+  - softplus
+  - tanh
+  - sigmoid
+  - elu
+  - linear
+
+optimizer:
+  - Adam
+  - RMSprop
+  - Adadelta
+  - Adamax
+  - Nadam
+  - Ftrl
+  - SGD
+
+learning_rate: [0.00001, 0.1]
+decay_steps: [10, 3000]
+decay_rate: [0.9, 0.999]
+
+layers_before_dropout: [1, 3]
+layers_after_dropout: [0, 3]
+
+dropout: [0, 1]
+dropout_rate: [0.0, 0.3]

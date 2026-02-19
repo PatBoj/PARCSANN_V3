@@ -2,8 +2,14 @@ from typing import List, Literal, Optional
 import yaml
 from pathlib import Path
 from pydantic import BaseModel, confloat
+from keras.optimizers import Adam, SGD, RMSprop, Adadelta, Adagrad, Adamax, Nadam, Ftrl
+from enum import Enum
 
 CONFIG_DIR = Path(__file__).resolve().parent
+
+# ======================================================================================================================
+# MAIN CONFIG
+# ======================================================================================================================
 
 
 class InputFileConfig(BaseModel):
@@ -101,3 +107,47 @@ def load_config(config_path: Path | None = None) -> ParcsannConfig:
         raw = yaml.safe_load(f)
 
     return ParcsannConfig(project_root_dir=get_project_root(), **raw)
+
+
+# ======================================================================================================================
+# TUNE HYPERPARAMETERS CONFIG
+# ======================================================================================================================
+
+class OptimizerName(str, Enum):
+    Adam = "Adam"
+    RMSprop = "RMSprop"
+    Adadelta = "Adadelta"
+    Adamax = "Adamax"
+    Nadam = "Nadam"
+    Ftrl = "Ftrl"
+    SGD = "SGD"
+
+
+class TuneHyperparametersConfig(BaseModel):
+    neurons: List[int]
+    activation: List[str]
+    optimizer: List[str]
+    learning_rate: List[float]
+    decay_steps: List[int]
+    decay_rate: List[float]
+    layers_before_dropout: List[int]
+    layers_after_dropout: List[int]
+    dropout: List[int]
+    dropout_rate: List[float]
+
+    optimizer: List[OptimizerName]
+
+    def get_optimizer_classes(self):
+        return [OPTIMIZER_MAP[o.value] for o in self.optimizer]
+
+
+def load_tune_hyperparameters_config(config_path: Path | None = None) -> TuneHyperparametersConfig:
+    if config_path:
+        config_path = get_project_root() / config_path
+    else:
+        config_path = get_project_root() / "configs" / "config_tune_hyperparameters.yaml"
+
+    with open(config_path, "r") as f:
+        raw = yaml.safe_load(f)
+
+    return TuneHyperparametersConfig(project_root_dir=get_project_root(), **raw)
