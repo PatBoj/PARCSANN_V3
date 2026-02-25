@@ -1,7 +1,9 @@
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Tuple
 import yaml
 from pathlib import Path
 from pydantic import BaseModel, confloat
+
+from parcsann.utils.dir import get_project_root
 
 CONFIG_DIR = Path(__file__).resolve().parent
 
@@ -82,19 +84,6 @@ class ParcsannConfig(BaseModel):
             file_cfg.resolve_path(self.input_data_dir)
 
 
-def get_project_root() -> Path:
-    if "__file__" in globals():
-        current = Path(__file__).resolve()
-    else:
-        current = Path.cwd()
-
-    for parent in current.parents:
-        if (parent / "pyproject.toml").exists():
-            return parent
-
-    raise RuntimeError("Project root not found")
-
-
 def load_config(config_path: Path | None = None) -> ParcsannConfig:
     if config_path:
         config_path = get_project_root() / config_path
@@ -113,7 +102,7 @@ def load_config(config_path: Path | None = None) -> ParcsannConfig:
 
 
 class TuneHyperparametersConfig(BaseModel):
-    neurons: List[int]
+    neurons: Tuple[int, int]
     activation: List[str]
     optimizer: List[
         Literal[
@@ -126,13 +115,27 @@ class TuneHyperparametersConfig(BaseModel):
             "SGD",
         ]
     ]
-    learning_rate: List[float]
-    decay_steps: List[int]
-    decay_rate: List[float]
-    layers_before_dropout: List[int]
-    layers_after_dropout: List[int]
-    dropout: List[int]
-    dropout_rate: List[float]
+    learning_rate: Tuple[float, float]
+    decay_steps: Tuple[int, int]
+    decay_rate: Tuple[float, float]
+    layers_before_dropout: Tuple[int, int]
+    layers_after_dropout: Tuple[int, int]
+    dropout: Tuple[int, int]
+    dropout_rate: Tuple[float, float]
+
+    number_of_folds: int
+    bayesian_inital_points: int
+    bayesian_number_of_iterations: int
+
+    def model_post_init(self, __context=None):
+        self.neurons = tuple(self.neurons)
+        self.learning_rate = tuple(self.learning_rate)
+        self.decay_steps = tuple(self.decay_steps)
+        self.decay_rate = tuple(self.decay_rate)
+        self.layers_before_dropout = tuple(self.layers_before_dropout)
+        self.layers_after_dropout = tuple(self.layers_after_dropout)
+        self.dropout = tuple(self.dropout)
+        self.dropout_rate = tuple(self.dropout_rate)
 
 
 def load_tune_hyperparameters_config(config_path: Path | None = None) -> TuneHyperparametersConfig:
