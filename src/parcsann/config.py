@@ -87,7 +87,7 @@ class ParcsannConfig(BaseModel):
 
 
 def load_config(config_path: Path | None = None) -> ParcsannConfig:
-    config_suffix = "" if ENV == "_PROD" else f"_{ENV}"
+    config_suffix = "" if ENV == "PROD" else f"_{ENV}"
     
     if config_path:
         config_path = get_project_root() / config_path
@@ -145,7 +145,7 @@ class TuneHyperparametersConfig(BaseModel):
 
 
 def load_tune_hyperparameters_config(config_path: Path | None = None) -> TuneHyperparametersConfig:
-    config_suffix = "" if ENV == "_PROD" else f"_{ENV}"
+    config_suffix = "" if ENV == "PROD" else f"_{ENV}"
 
     if config_path:
         config_path = get_project_root() / config_path
