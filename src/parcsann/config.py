@@ -4,7 +4,9 @@ from pathlib import Path
 from pydantic import BaseModel, confloat
 
 from parcsann.utils.dir import get_project_root
+import os
 
+ENV = os.getenv("ENV", "DEV")
 CONFIG_DIR = Path(__file__).resolve().parent
 
 # ======================================================================================================================
@@ -85,10 +87,12 @@ class ParcsannConfig(BaseModel):
 
 
 def load_config(config_path: Path | None = None) -> ParcsannConfig:
+    config_suffix = "" if ENV == "_PROD" else f"_{ENV}"
+    
     if config_path:
         config_path = get_project_root() / config_path
     else:
-        config_path = get_project_root() / "configs" / "config_default.yaml"
+        config_path = get_project_root() / f"configs{config_suffix}" / "config_default.yaml"
 
     with open(config_path, "r") as f:
         raw = yaml.safe_load(f)
@@ -126,6 +130,8 @@ class TuneHyperparametersConfig(BaseModel):
     number_of_folds: int
     bayesian_inital_points: int
     bayesian_number_of_iterations: int
+    train_split_ratio: float
+    epochs: int
 
     def model_post_init(self, __context=None):
         self.neurons = tuple(self.neurons)
@@ -139,10 +145,12 @@ class TuneHyperparametersConfig(BaseModel):
 
 
 def load_tune_hyperparameters_config(config_path: Path | None = None) -> TuneHyperparametersConfig:
+    config_suffix = "" if ENV == "_PROD" else f"_{ENV}"
+
     if config_path:
         config_path = get_project_root() / config_path
     else:
-        config_path = get_project_root() / "configs" / "config_tune_hyperparameters.yaml"
+        config_path = get_project_root() / f"configs{config_suffix}" / "config_tune_hyperparameters.yaml"
 
     with open(config_path, "r") as f:
         raw = yaml.safe_load(f)

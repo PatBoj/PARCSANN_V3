@@ -1,13 +1,16 @@
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # or "3"
+
 from parcsann.read_data.nuclear_code_data import CoreData
 from parcsann.config import load_tune_hyperparameters_config
 from keras.optimizers import Adam, SGD, RMSprop, Adadelta, Adagrad, Adamax, Nadam, Ftrl
 from pathlib import Path
-
 from typing import Callable, Self
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 import seaborn as sns
 
 from sklearn.model_selection import train_test_split
@@ -16,6 +19,7 @@ from loguru import logger
 import tensorflow as tf
 
 from keras.models import Sequential
+from keras import Input
 from keras.layers import Dense, BatchNormalization, Dropout, Normalization
 from keras.optimizers import Adam, SGD, RMSprop, Adadelta, Adagrad, Adamax, Nadam, Ftrl
 from keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -33,6 +37,7 @@ from datetime import datetime
 
 from parcsann.utils.dir import get_project_root
 
+ENV = os.getenv("ENV", "DEV")
 
 class TuneHyperparametes:
     optimizer_map = {
@@ -49,13 +54,20 @@ class TuneHyperparametes:
     def __init__(self, core_data: CoreData, hyperparameters_config_path: Path | None = None) -> None:
         self.config = load_tune_hyperparameters_config(hyperparameters_config_path)
         self.activation_naming_map = dict(enumerate(self.config.activation))
-        self.optimizer_naming_map = dict(enumerate(self.optimizer_map))
+        self.optimizer_naming_map = dict(enumerate(self.config.optimizer))
 
-        self.X_train, self.X_val, self.y_train, self.y_val = core_data.train_test_div(0.2)
+        self.X_train, self.X_val, self.y_train, self.y_val = core_data.train_test_div(self.config.train_split_ratio)
+        if ENV == "DEV":
+            self.X_train = self.X_train[:19]
+            self.X_val = self.X_val[:1]
+            self.y_train = self.y_train[:19]
+            self.y_val = self.y_val[:1]
 
         self.bayesian_optimization: BayesianOptimization | None = None
 
-        self.output_dir = get_project_root() / "hyperparameters" / datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        output_dir_suffix = "" if ENV == "PROD" else f"_{ENV}"
+        self.output_dir = (
+            get_project_root() / f"hyperparameters{output_dir_suffix}" / datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def create_and_compute_nn(
@@ -83,7 +95,7 @@ class TuneHyperparametes:
             )
 
             nn = Sequential()
-            nn.add(Dense(neurons, input_dim=self.X_train.shape[1], activation=activation))
+            nn.add(Input(shape=(self.X_train.shape[1],)))
             
             for _ in range(layers_before_dropout):
                 nn.add(Dense(neurons, activation=activation))
@@ -99,7 +111,9 @@ class TuneHyperparametes:
             return nn
         
         es = EarlyStopping(monitor="val_loss", mode="min", verbose=0, patience=10, restore_best_weights=True)
-        nn = KerasRegressor(build_fn=build_nn, epochs=300, verbose=0, fit__callbacks=[es])
+        nn = KerasRegressor(
+            model=build_nn, epochs=self.config.epochs, verbose=0, fit__callbacks=[es], fit__validation_split=0.2
+        )
 
         kfold = KFold(n_splits=self.config.number_of_folds, shuffle=True)
         
@@ -112,8 +126,8 @@ class TuneHyperparametes:
     def run_bayesian_optimization(self, f: Callable[..., float] | None) -> Self:
         nn_parameters = {
             "neurons": self.config.neurons,
-            "activation": (0, len(self.activation_naming_map)),
-            "optimizer": (0, len(self.optimizer_naming_map)),
+            "activation": (0, len(self.activation_naming_map) - 1),
+            "optimizer": (0, len(self.optimizer_naming_map) - 1),
             "learning_rate": self.config.learning_rate,
             "layers_before_dropout": self.config.layers_before_dropout,
             "layers_after_dropout": self.config.layers_after_dropout,
@@ -138,16 +152,16 @@ class TuneHyperparametes:
     
         for key, value in params.items():
             if key in int_values:
-                replaced_value = int(round(value))
+                trans_params[key] = int(round(value))
             elif key in bool_values:
-                replaced_value = bool(round(value))
+                trans_params[key] = bool(round(value))
 
             elif key == "activation":
-                replaced_value = self.activation_naming_map[round(value)]
-            elif key == "optimization":
-                replaced_value = self.optimizer_naming_map[round(value)]
-
-            trans_params[key] = replaced_value
+                trans_params[key] = self.activation_naming_map[round(value)]
+            elif key == "optimizer":
+                trans_params[key] = self.optimizer_naming_map[round(value)]
+            else:
+                trans_params[key] = value
 
         return trans_params
     
@@ -165,7 +179,7 @@ class TuneHyperparametes:
 
     def save_all_parameters(self):
         with open(self.output_dir / "all_parameters.json", "w") as f:
-            json.dump(self.get_all_parameters(), f, indent=4)
+            json.dump(self.get_all_parameters, f, indent=4)
     
     @cached_property
     def get_best_parameters(self):
@@ -173,9 +187,32 @@ class TuneHyperparametes:
 
     def save_best_parameters(self):
         with open(self.output_dir / "best_parameters.json", "w") as f:
-            json.dump(self.get_best_parameters(), f, indent=4)
+            json.dump(self.get_best_parameters, f, indent=4)
+
+    def linear_regression(self):
+        linear_regression = LinearRegression()
+        kfold = KFold(n_splits=self.config.number_of_folds, shuffle=True)
+        scores = cross_val_score(
+            linear_regression, self.X_train, self.y_train, cv=kfold, scoring="neg_mean_squared_error"
+        )
+
+        return scores
+    
+    def compare_scores(self):
+        liner_score = self.linear_regression().mean()
+        nn_score = self.bayesian_optimization.max["target"]
+
+        msg = (
+            f"Linear model: {liner_score:.2f}, and neural network: {nn_score:.2f}, "
+            f"neural network is better: {(liner_score - nn_score) / liner_score:.2%}"
+        )
+
+        logger.info(msg)
+        with open(self.output_dir / "comparison.txt", "a") as f:
+            f.write(msg + "\n")
 
     def run(self):
         self.run_bayesian_optimization(self.create_and_compute_nn)
         self.save_all_parameters()
         self.save_best_parameters()
+        self.compare_scores()

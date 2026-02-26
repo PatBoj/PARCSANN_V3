@@ -26,8 +26,8 @@ layers_after_dropout: [0, 3]
 dropout: [0, 1]
 dropout_rate: [0.0, 0.3]
 
-number_of_folds: 5
-bayesian_inital_points: 25
-bayesian_number_of_iterations: 40
+number_of_folds: 2
+bayesian_inital_points: 1
+bayesian_number_of_iterations: 1
 train_split_ratio: 0.2
-epochs: 300
+epochs: 10
