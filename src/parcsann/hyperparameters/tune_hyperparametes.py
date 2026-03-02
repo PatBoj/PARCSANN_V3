@@ -37,6 +37,9 @@ from datetime import datetime
 
 from parcsann.utils.dir import get_project_root
 
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=os.path.join(get_project_root(), ".env"))
 ENV = os.getenv("ENV", "DEV")
 
 class TuneHyperparametes:
