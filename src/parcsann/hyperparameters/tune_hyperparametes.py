@@ -30,7 +30,7 @@ from functools import cached_property
 import json
 
 from math import floor
-from sklearn.metrics import make_scorer, mean_squared_error
+from sklearn.metrics import make_scorer, mean_squared_error, mean_absolute_percentage_error
 from bayes_opt import BayesianOptimization
 from sklearn.model_selection import KFold
 from datetime import datetime
@@ -56,12 +56,12 @@ class TuneHyperparametes:
         self.activation_naming_map = dict(enumerate(self.config.activation))
         self.optimizer_naming_map = dict(enumerate(self.config.optimizer))
 
-        self.X_train, self.X_val, self.y_train, self.y_val = core_data.train_test_div(self.config.train_split_ratio)
+        self.X_train, self.X_test, self.y_train, self.y_test = core_data.train_test_div(self.config.train_split_ratio)
         if ENV == "DEV":
             self.X_train = self.X_train[:19]
-            self.X_val = self.X_val[:1]
+            self.X_test = self.X_test[:2]
             self.y_train = self.y_train[:19]
-            self.y_val = self.y_val[:1]
+            self.y_test = self.y_test[:2]
 
         self.bayesian_optimization: BayesianOptimization | None = None
 
@@ -191,20 +191,120 @@ class TuneHyperparametes:
 
     def linear_regression(self):
         linear_regression = LinearRegression()
-        kfold = KFold(n_splits=self.config.number_of_folds, shuffle=True)
-        scores = cross_val_score(
-            linear_regression, self.X_train, self.y_train, cv=kfold, scoring="neg_mean_squared_error"
+        linear_regression.fit(self.X_train, self.y_train)
+        y_pred = linear_regression.predict(self.X_test)
+
+        return {
+            # "model": nn,
+            "y_pred": y_pred,
+            "mse": mean_squared_error(self.y_test, y_pred),
+            "mape": mean_absolute_percentage_error(self.y_test, y_pred),
+        }
+    
+    def neural_network(self):
+        lr_schedule = ExponentialDecay(
+            initial_learning_rate=self.get_best_parameters["learning_rate"],
+            decay_steps=self.get_best_parameters["decay_steps"],
+            decay_rate=self.get_best_parameters["decay_rate"],
+            staircase=False
         )
 
-        return scores
+        optimizer_instance = self.optimizer_map[self.get_best_parameters["optimizer"]](learning_rate=lr_schedule)
+
+        nn = Sequential()
+        nn.add(Input(shape=(self.X_train.shape[1],)))
+        
+        for _ in range(self.get_best_parameters["layers_before_dropout"]):
+            nn.add(Dense(self.get_best_parameters["neurons"], activation=self.get_best_parameters["activation"]))
+        
+        if self.get_best_parameters["dropout"] > 0.5:
+            nn.add(Dropout(self.get_best_parameters["dropout_rate"]))
+
+        for _ in range(self.get_best_parameters["layers_after_dropout"]):
+            nn.add(Dense(self.get_best_parameters["neurons"], activation=self.get_best_parameters["activation"]))
+        
+        nn.add(Dense(self.y_train.shape[1], activation="linear"))
+        nn.compile(loss="mse", optimizer=optimizer_instance)
+
+        es = EarlyStopping(monitor="val_loss", mode="min", verbose=0, patience=10, restore_best_weights=True)        
+        nn.fit(
+            self.X_train,
+            self.y_train,
+            validation_data=(self.X_test, self.y_test),
+            epochs=self.config.epochs,
+            callbacks=[es],
+        )
+
+        y_pred = nn.predict(self.X_test)
+
+        return {
+            # "model": nn,
+            "y_pred": y_pred,
+            "mse": mean_squared_error(self.y_test, y_pred),
+            "mape": mean_absolute_percentage_error(self.y_test, y_pred),
+        }
+    
+    def create_and_save_plot(self, y_pred_nn, y_pred_lr):
+        df = pd.DataFrame({
+            "y_test": self.y_test.flatten(),
+            "y_pred_nn": y_pred_nn,
+            "y_pred_lr": y_pred_lr,
+        })
+        
+        df["rad_nn"] = np.abs(df["y_test"] - df["y_pred_nn"]) / (np.abs(df["y_test"]))
+        df["rad_lr"] = np.abs(df["y_test"] - df["y_pred_lr"]) / (np.abs(df["y_test"]))
+
+        global_min = min(df["rad_nn"].min(), df["rad_lr"].min())
+        global_max = max(df["rad_nn"].max(), df["rad_lr"].max())
+        bins = np.linspace(global_min, global_max, 36)
+
+        plt.figure(figsize=(10, 6))
+        plt.hist(df["rad_nn"], bins=bins, alpha=0.5, label="Neural Network")
+        plt.hist(df["rad_lr"], bins=bins, alpha=0.5, label="Linear Model")
+        plt.legend()
+        plt.xlabel("Relative Absolute Difference")
+        plt.savefig(self.output_dir / "comparison_histogram.png", bbox_inches="tight")
+        plt.close()
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(
+            df["y_test"], 
+            df["y_pred_nn"], 
+            linestyle='None',
+            marker='o', 
+            markerfacecolor='none',
+            markeredgecolor='blue',
+            label="Neural Network"
+        )
+
+        plt.plot(
+            df["y_test"], 
+            df["y_pred_lr"], 
+            linestyle='None',
+            marker='s', 
+            markerfacecolor='none',
+            markeredgecolor='red',
+            label="Linear Model"
+        )
+
+        min_val = df["y_test"].min()
+        max_val = df["y_test"].max()
+        plt.plot([min_val, max_val], [min_val, max_val], color='green', linestyle='--', label='y=x')
+
+        plt.legend()
+        plt.savefig(self.output_dir / "scatter_plot.png", bbox_inches="tight")
     
     def compare_scores(self):
-        liner_score = self.linear_regression().mean()
-        nn_score = self.bayesian_optimization.max["target"]
+        linear_output = self.linear_regression()
+        nn_output = self.neural_network()
+
+        self.create_and_save_plot(nn_output["y_pred"].flatten(), linear_output["y_pred"].flatten())
 
         msg = (
-            f"Linear model: {liner_score:.2f}, and neural network: {nn_score:.2f}, "
-            f"neural network is better: {(liner_score - nn_score) / liner_score:.2%}"
+            f"Linear model mse: {linear_output["mse"]:.2f}, and neural network mse: {nn_output["mse"]:.2f}, "
+            f"neural network mse is better: {(linear_output["mse"] - nn_output["mse"]) / linear_output["mse"]:.2%}\n"
+            f"Linear model mape: {linear_output["mape"]:.2f}, and neural network mape: {nn_output["mape"]:.2f}, "
+            f"neural network mape is better: {(linear_output["mape"] - nn_output["mape"]) / linear_output["mape"]:.2%}"
         )
 
         logger.info(msg)
