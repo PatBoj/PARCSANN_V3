@@ -13,6 +13,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 from sklearn.model_selection import cross_val_score
 from loguru import logger
@@ -80,7 +82,7 @@ class TuneHyperparametes:
         layers_after_dropout = round(layers_after_dropout)
         decay_steps = round(decay_steps)
 
-        def build_nn():
+        def build_nn(meta):
             lr_schedule = ExponentialDecay(
                 initial_learning_rate=learning_rate,
                 decay_steps=decay_steps,
@@ -95,11 +97,6 @@ class TuneHyperparametes:
             nn = Sequential()
             nn.add(Input(shape=(self.X_train.shape[1],)))
 
-            if normalize > 0.5:
-                normalizer = Normalization()
-                normalizer.adapt(self.X_train)
-                nn.add(normalizer)
-
             for _ in range(layers_before_dropout):
                 nn.add(Dense(neurons, activation=activation))
             
@@ -113,14 +110,20 @@ class TuneHyperparametes:
             nn.compile(loss="mse", optimizer=optimizer_instance)
             return nn
         
-        es = EarlyStopping(monitor="val_loss", mode="min", verbose=0, patience=10, restore_best_weights=True)
-        nn = KerasRegressor(
-            model=build_nn, epochs=self.config.epochs, verbose=0, fit__callbacks=[es], fit__validation_split=0.2
-        )
+        es = EarlyStopping(monitor="loss", mode="min", verbose=0, patience=10, restore_best_weights=True)
+        nn = KerasRegressor(model=build_nn, epochs=self.config.epochs, verbose=0, fit__callbacks=[es])
 
         kfold = KFold(n_splits=self.config.number_of_folds, shuffle=True)
+
+        if normalize > 0.5:
+            model = Pipeline([
+                ("scaler", StandardScaler()),
+                ("nn", nn),
+            ])
+        else:
+            model = nn
         
-        score = cross_val_score(nn, self.X_train, self.y_train, scoring="neg_mean_squared_error", cv=kfold)
+        score = cross_val_score(model, self.X_train, self.y_train, scoring="neg_mean_squared_error", cv=kfold)
         if np.isnan(score).any():
             return -1e10
 
@@ -217,11 +220,6 @@ class TuneHyperparametes:
 
         nn = Sequential()
         nn.add(Input(shape=(self.X_train.shape[1],)))
-
-        if self.get_best_parameters["normalize"] > 0.5:
-            normalizer = Normalization()
-            normalizer.adapt(self.X_train)
-            nn.add(normalizer)
         
         for _ in range(self.get_best_parameters["layers_before_dropout"]):
             nn.add(Dense(self.get_best_parameters["neurons"], activation=self.get_best_parameters["activation"]))
@@ -235,8 +233,16 @@ class TuneHyperparametes:
         nn.add(Dense(self.y_train.shape[1], activation="linear"))
         nn.compile(loss="mse", optimizer=optimizer_instance)
 
-        es = EarlyStopping(monitor="val_loss", mode="min", verbose=0, patience=10, restore_best_weights=True)        
-        nn.fit(
+        if self.get_best_parameters["normalize"] > 0.5:
+            model = Pipeline([
+                ("scaler", StandardScaler()),
+                ("nn", nn),
+            ])
+        else:
+            model = nn
+
+        es = EarlyStopping(monitor="val_loss", mode="min", verbose=0, patience=10, restore_best_weights=True)     
+        model.fit(
             self.X_train,
             self.y_train,
             validation_data=(self.X_test, self.y_test),
