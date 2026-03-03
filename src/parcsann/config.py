@@ -2,16 +2,14 @@ from typing import List, Literal, Optional, Tuple
 import yaml
 from pathlib import Path
 from pydantic import BaseModel, confloat
-
-from parcsann.utils.dir import get_project_root
 import os
-
 from dotenv import load_dotenv
+from parcsann.utils.dir import get_project_root
+
+CONFIG_DIR = Path(__file__).resolve().parent
 
 load_dotenv(dotenv_path=os.path.join(get_project_root(), ".env"))
 ENV = os.getenv("ENV", "DEV")
-
-CONFIG_DIR = Path(__file__).resolve().parent
 
 # ======================================================================================================================
 # MAIN CONFIG
@@ -126,6 +124,7 @@ class TuneHyperparametersConfig(BaseModel):
     learning_rate: Tuple[float, float]
     decay_steps: Tuple[int, int]
     decay_rate: Tuple[float, float]
+    normalize: Tuple[float, float]
     layers_before_dropout: Tuple[int, int]
     layers_after_dropout: Tuple[int, int]
     dropout: Tuple[int, int]
@@ -142,6 +141,7 @@ class TuneHyperparametersConfig(BaseModel):
         self.learning_rate = tuple(self.learning_rate)
         self.decay_steps = tuple(self.decay_steps)
         self.decay_rate = tuple(self.decay_rate)
+        self.normalize = tuple(self.normalize)
         self.layers_before_dropout = tuple(self.layers_before_dropout)
         self.layers_after_dropout = tuple(self.layers_after_dropout)
         self.dropout = tuple(self.dropout)

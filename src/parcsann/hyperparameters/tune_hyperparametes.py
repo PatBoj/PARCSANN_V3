@@ -1,46 +1,41 @@
 import os
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # or "3"
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 from parcsann.read_data.nuclear_code_data import CoreData
 from parcsann.config import load_tune_hyperparameters_config
+from parcsann.config import load_config
 from keras.optimizers import Adam, SGD, RMSprop, Adadelta, Adagrad, Adamax, Nadam, Ftrl
 from pathlib import Path
 from typing import Callable, Self
+from dataclasses import asdict
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
-import seaborn as sns
 
-from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
 from loguru import logger
-import tensorflow as tf
 
 from keras.models import Sequential
 from keras import Input
-from keras.layers import Dense, BatchNormalization, Dropout, Normalization
+from keras.layers import Dense, Dropout, Normalization
 from keras.optimizers import Adam, SGD, RMSprop, Adadelta, Adagrad, Adamax, Nadam, Ftrl
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.callbacks import EarlyStopping
 from scikeras.wrappers import KerasRegressor
 from keras.optimizers.schedules import ExponentialDecay
 
 from functools import cached_property
 import json
 
-from math import floor
-from sklearn.metrics import make_scorer, mean_squared_error, mean_absolute_percentage_error
+from sklearn.metrics import mean_squared_error, mean_absolute_percentage_error
 from bayes_opt import BayesianOptimization
 from sklearn.model_selection import KFold
 from datetime import datetime
 
 from parcsann.utils.dir import get_project_root
+from parcsann.config import ENV
 
-from dotenv import load_dotenv
-
-load_dotenv(dotenv_path=os.path.join(get_project_root(), ".env"))
-ENV = os.getenv("ENV", "DEV")
 
 class TuneHyperparametes:
     optimizer_map = {
@@ -74,7 +69,7 @@ class TuneHyperparametes:
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def create_and_compute_nn(
-            self, neurons: float, activation: float, optimizer: float, learning_rate: float, 
+            self, neurons: float, activation: float, optimizer: float, learning_rate: float, normalize: float,
             layers_before_dropout: float, layers_after_dropout: float, dropout: float, dropout_rate: float, 
             decay_steps: float, decay_rate: float
         ) -> float:        
@@ -99,11 +94,16 @@ class TuneHyperparametes:
 
             nn = Sequential()
             nn.add(Input(shape=(self.X_train.shape[1],)))
-            
+
+            if normalize > 0.5:
+                normalizer = Normalization()
+                normalizer.adapt(self.X_train)
+                nn.add(normalizer)
+
             for _ in range(layers_before_dropout):
                 nn.add(Dense(neurons, activation=activation))
             
-            if dropout > 0.5:
+            if dropout:
                 nn.add(Dropout(dropout_rate))
     
             for _ in range(layers_after_dropout):
@@ -132,6 +132,7 @@ class TuneHyperparametes:
             "activation": (0, len(self.activation_naming_map) - 1),
             "optimizer": (0, len(self.optimizer_naming_map) - 1),
             "learning_rate": self.config.learning_rate,
+            "normalize": self.config.normalize,
             "layers_before_dropout": self.config.layers_before_dropout,
             "layers_after_dropout": self.config.layers_after_dropout,
             "dropout": self.config.dropout,
@@ -149,7 +150,7 @@ class TuneHyperparametes:
     
     def transform_parameters(self, params: dict) -> dict:
         int_values = ["neurons", "layers_before_dropout", "layers_after_dropout", "decay_steps"]
-        bool_values = ["dropout"]
+        bool_values = ["dropout", "normalize"]
         
         trans_params = {}
     
@@ -216,6 +217,11 @@ class TuneHyperparametes:
 
         nn = Sequential()
         nn.add(Input(shape=(self.X_train.shape[1],)))
+
+        if self.get_best_parameters["normalize"] > 0.5:
+            normalizer = Normalization()
+            normalizer.adapt(self.X_train)
+            nn.add(normalizer)
         
         for _ in range(self.get_best_parameters["layers_before_dropout"]):
             nn.add(Dense(self.get_best_parameters["neurons"], activation=self.get_best_parameters["activation"]))
@@ -306,7 +312,7 @@ class TuneHyperparametes:
         msg = (
             f"Linear model mse: {linear_output["mse"]:.2f}, and neural network mse: {nn_output["mse"]:.2f}, "
             f"neural network mse is better: {(linear_output["mse"] - nn_output["mse"]) / linear_output["mse"]:.2%}\n"
-            f"Linear model mape: {linear_output["mape"]:.2f}, and neural network mape: {nn_output["mape"]:.2f}, "
+            f"Linear model mape: {linear_output["mape"]:.3%}, and neural network mape: {nn_output["mape"]:.3%}, "
             f"neural network mape is better: {(linear_output["mape"] - nn_output["mape"]) / linear_output["mape"]:.2%}"
         )
 
@@ -314,8 +320,20 @@ class TuneHyperparametes:
         with open(self.output_dir / "comparison.txt", "a") as f:
             f.write(msg + "\n")
 
+    def save_input_output_columns(self):
+        cfg = load_config()
+        input_cols, output_cols = cfg.input_columns, cfg.output_columns
+
+        with open(self.output_dir / "input_output_columns.txt", "a") as f:
+            f.write("INPUT COLUMNS:\n")
+            f.write("\n".join(input_cols))
+            f.write("\n\nOUTPUT COLUMNS:\n")
+            f.write("\n".join(output_cols))
+            f.write("\n")
+
     def run(self):
         self.run_bayesian_optimization(self.create_and_compute_nn)
         self.save_all_parameters()
         self.save_best_parameters()
+        self.save_input_output_columns()
         self.compare_scores()

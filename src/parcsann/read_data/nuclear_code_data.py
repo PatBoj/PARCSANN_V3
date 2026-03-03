@@ -221,7 +221,8 @@ class CoreData:
             regular_dict = self.get_monocore_dict(self.monocore_data, regular_col)
             input_data_temp = input_data_raw_temp.copy()
             input_data_temp = input_data_temp.add_suffix(f"_{regular_col}")
-            input_data_temp = input_data_temp.replace(regular_dict)
+            # input_data_temp = input_data_temp.replace(regular_dict) THIS WORKED BEFORE !!!
+            input_data_temp = input_data_temp.map(lambda x: regular_dict.get(x, x))
 
             self.input_data_df = pd.concat((self.input_data_df, input_data_temp), axis=1)
 
