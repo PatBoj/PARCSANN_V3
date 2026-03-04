@@ -4,6 +4,7 @@ from pathlib import Path
 from pydantic import BaseModel, confloat
 import os
 from dotenv import load_dotenv
+from loguru import logger
 from parcsann.utils.dir import get_project_root
 
 CONFIG_DIR = Path(__file__).resolve().parent
@@ -90,6 +91,7 @@ class ParcsannConfig(BaseModel):
 
 def load_config(config_path: Path | None = None) -> ParcsannConfig:
     config_suffix = "" if ENV == "PROD" else f"_{ENV}"
+    config_suffix = config_suffix if not config_path else ""
     
     if config_path:
         config_path = get_project_root() / config_path
@@ -98,6 +100,8 @@ def load_config(config_path: Path | None = None) -> ParcsannConfig:
 
     with open(config_path, "r") as f:
         raw = yaml.safe_load(f)
+
+    logger.error(f"\n\n>>> LOADING CONFIG: {config_path} <<<\n")
 
     return ParcsannConfig(project_root_dir=get_project_root(), **raw)
 

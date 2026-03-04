@@ -40,8 +40,8 @@ monocore_evolution_file_details:
 # ======================================================================================================================
 
 use_normalization_layer: False
-use_one_hot_encoding: True
-use_monocores: True
+use_one_hot_encoding: False
+use_monocores: False
 
 train_split_ratio: 0.2
 
@@ -61,11 +61,7 @@ train_split_ratio: 0.2
 # - rho_evolution
 # - ppf_evolution
 input_columns:
-  - cycle_length_in_days
-  - rho_max
-  - ppf_max
   - rho_evolution
-  - ppf_evolution
 
 # Possible output columns names:
 #

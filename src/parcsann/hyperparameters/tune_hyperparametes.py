@@ -8,6 +8,7 @@ from keras.optimizers import Adam, SGD, RMSprop, Adadelta, Adagrad, Adamax, Nada
 from pathlib import Path
 from typing import Callable, Self
 from dataclasses import asdict
+from parcsann.config import ParcsannConfig
 
 import numpy as np
 import pandas as pd
@@ -51,7 +52,12 @@ class TuneHyperparametes:
         "SGD": SGD,
     }
 
-    def __init__(self, core_data: CoreData, hyperparameters_config_path: Path | None = None) -> None:
+    def __init__(
+            self, 
+            core_data: CoreData, 
+            hyperparameters_config_path: Path | None = None, 
+            experiment_dir: str = None,
+        ) -> None:
         self.config = load_tune_hyperparameters_config(hyperparameters_config_path)
         self.activation_naming_map = dict(enumerate(self.config.activation))
         self.optimizer_naming_map = dict(enumerate(self.config.optimizer))
@@ -66,8 +72,12 @@ class TuneHyperparametes:
         self.bayesian_optimization: BayesianOptimization | None = None
 
         output_dir_suffix = "" if ENV == "PROD" else f"_{ENV}"
-        self.output_dir = (
-            get_project_root() / f"hyperparameters{output_dir_suffix}" / datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+        
+        self.output_dir = get_project_root() / f"hyperparameters{output_dir_suffix}"
+        if experiment_dir:
+            self.output_dir = self.output_dir / experiment_dir
+        self.output_dir = self.output_dir / datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def create_and_compute_nn(
@@ -81,8 +91,8 @@ class TuneHyperparametes:
         layers_before_dropout = round(layers_before_dropout)
         layers_after_dropout = round(layers_after_dropout)
         decay_steps = round(decay_steps)
-
-        def build_nn(meta):
+        
+        def build_nn():
             lr_schedule = ExponentialDecay(
                 initial_learning_rate=learning_rate,
                 decay_steps=decay_steps,
@@ -218,38 +228,48 @@ class TuneHyperparametes:
 
         optimizer_instance = self.optimizer_map[self.get_best_parameters["optimizer"]](learning_rate=lr_schedule)
 
-        nn = Sequential()
-        nn.add(Input(shape=(self.X_train.shape[1],)))
-        
-        for _ in range(self.get_best_parameters["layers_before_dropout"]):
-            nn.add(Dense(self.get_best_parameters["neurons"], activation=self.get_best_parameters["activation"]))
-        
-        if self.get_best_parameters["dropout"] > 0.5:
-            nn.add(Dropout(self.get_best_parameters["dropout_rate"]))
+        def build_nn():
+            nn = Sequential()
+            nn.add(Input(shape=(self.X_train.shape[1],)))
 
-        for _ in range(self.get_best_parameters["layers_after_dropout"]):
-            nn.add(Dense(self.get_best_parameters["neurons"], activation=self.get_best_parameters["activation"]))
-        
-        nn.add(Dense(self.y_train.shape[1], activation="linear"))
-        nn.compile(loss="mse", optimizer=optimizer_instance)
+            for _ in range(self.get_best_parameters["layers_before_dropout"]):
+                nn.add(Dense(
+                    self.get_best_parameters["neurons"],
+                    activation=self.get_best_parameters["activation"]
+                ))
 
-        if self.get_best_parameters["normalize"] > 0.5:
+            if self.get_best_parameters["dropout"]:
+                nn.add(Dropout(self.get_best_parameters["dropout_rate"]))
+
+            for _ in range(self.get_best_parameters["layers_after_dropout"]):
+                nn.add(Dense(
+                    self.get_best_parameters["neurons"],
+                    activation=self.get_best_parameters["activation"]
+                ))
+
+            nn.add(Dense(self.y_train.shape[1], activation="linear"))
+            nn.compile(loss="mse", optimizer=optimizer_instance)
+
+            return nn
+        
+        es = EarlyStopping(monitor="loss", mode="min", verbose=0, patience=10, restore_best_weights=True)   
+        nn = KerasRegressor(
+            model=build_nn,
+            epochs=self.config.epochs,
+            callbacks=[es],
+            verbose=0
+        )
+
+        if self.get_best_parameters["normalize"]:
             model = Pipeline([
                 ("scaler", StandardScaler()),
                 ("nn", nn),
             ])
+            model.fit(self.X_train, self.y_train, nn__callbacks=[es])
         else:
             model = nn
-
-        es = EarlyStopping(monitor="val_loss", mode="min", verbose=0, patience=10, restore_best_weights=True)     
-        model.fit(
-            self.X_train,
-            self.y_train,
-            validation_data=(self.X_test, self.y_test),
-            epochs=self.config.epochs,
-            callbacks=[es],
-        )
-
+            model.fit(self.X_train, self.y_train, callbacks=[es])
+        
         y_pred = nn.predict(self.X_test)
 
         return {
@@ -326,20 +346,30 @@ class TuneHyperparametes:
         with open(self.output_dir / "comparison.txt", "a") as f:
             f.write(msg + "\n")
 
-    def save_input_output_columns(self):
-        cfg = load_config()
-        input_cols, output_cols = cfg.input_columns, cfg.output_columns
+    def save_input_output_columns(self, parcasnn_config: ParcsannConfig | None = None):
+        if not parcasnn_config:
+            parcasnn_config = load_config()
 
         with open(self.output_dir / "input_output_columns.txt", "a") as f:
             f.write("INPUT COLUMNS:\n")
-            f.write("\n".join(input_cols))
+            f.write("\n".join(parcasnn_config.input_columns))
             f.write("\n\nOUTPUT COLUMNS:\n")
-            f.write("\n".join(output_cols))
+            f.write("\n".join(parcasnn_config.output_columns))
+            f.write("\n\n")
+            f.write(f"USE MONOCORES: {parcasnn_config.use_monocores}\n")
+            f.write(f"USE ONE HOT ENCODING: {parcasnn_config.use_one_hot_encoding}\n")
             f.write("\n")
 
-    def run(self):
+    # def save_read_model_dummy(self):
+    #     import joblib
+
+    #     joblib.dump(model, "model.pkl")
+    #     model = joblib.load("model.pkl")
+    #     y_pred = model.predict(X_new)
+
+    def run(self, parcasnn_config: ParcsannConfig | None = None):
         self.run_bayesian_optimization(self.create_and_compute_nn)
         self.save_all_parameters()
         self.save_best_parameters()
-        self.save_input_output_columns()
+        self.save_input_output_columns(parcasnn_config)
         self.compare_scores()

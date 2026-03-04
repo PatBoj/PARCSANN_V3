@@ -62,10 +62,8 @@ train_split_ratio: 0.2
 # - ppf_evolution
 input_columns:
   - cycle_length_in_days
-  - rho_max
   - ppf_max
-  - rho_evolution
-  - ppf_evolution
+  - rho_max
 
 # Possible output columns names:
 #
