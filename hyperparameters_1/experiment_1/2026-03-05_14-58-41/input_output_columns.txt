@@ -1,0 +1,9 @@
+INPUT COLUMNS:
+rho_evolution
+
+OUTPUT COLUMNS:
+cycle_length_in_days
+
+USE MONOCORES: False
+USE ONE HOT ENCODING: False
+

@@ -1,0 +1,1042 @@
+[
+    {
+        "target": -0.00023376576465300073,
+        "params": {
+            "neurons": 60,
+            "activation": "softplus",
+            "optimizer": "Adamax",
+            "learning_rate": 0.07110761938180946,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 2,
+            "dropout": true,
+            "dropout_rate": 0.006685036476619521,
+            "decay_steps": 2997,
+            "decay_rate": 0.9887438239640683
+        }
+    },
+    {
+        "target": -0.0002383685735485648,
+        "params": {
+            "neurons": 14,
+            "activation": "softplus",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.03527704568248512,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 0,
+            "dropout": true,
+            "dropout_rate": 0.25703763618271186,
+            "decay_steps": 2575,
+            "decay_rate": 0.9086790485568277
+        }
+    },
+    {
+        "target": -0.00024124240440426568,
+        "params": {
+            "neurons": 54,
+            "activation": "softplus",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.057222520988608694,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.13465798709189133,
+            "decay_steps": 1076,
+            "decay_rate": 0.9362285003372823
+        }
+    },
+    {
+        "target": -0.0002452352936192959,
+        "params": {
+            "neurons": 30,
+            "activation": "relu",
+            "optimizer": "Adamax",
+            "learning_rate": 0.026091617708195583,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 0,
+            "dropout": true,
+            "dropout_rate": 0.0544941032173284,
+            "decay_steps": 159,
+            "decay_rate": 0.9528212289048976
+        }
+    },
+    {
+        "target": -0.00023695007948805027,
+        "params": {
+            "neurons": 20,
+            "activation": "elu",
+            "optimizer": "Nadam",
+            "learning_rate": 0.011952304446355764,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.10494200093295905,
+            "decay_steps": 202,
+            "decay_rate": 0.98256472382943
+        }
+    },
+    {
+        "target": -0.00026438117095554773,
+        "params": {
+            "neurons": 104,
+            "activation": "sigmoid",
+            "optimizer": "RMSprop",
+            "learning_rate": 0.04616710305618564,
+            "normalize": false,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 0,
+            "dropout": true,
+            "dropout_rate": 0.17957552191423137,
+            "decay_steps": 2849,
+            "decay_rate": 0.9322339404656834
+        }
+    },
+    {
+        "target": -0.0002346244723905791,
+        "params": {
+            "neurons": 55,
+            "activation": "linear",
+            "optimizer": "Adam",
+            "learning_rate": 0.00816207596456867,
+            "normalize": true,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 2,
+            "dropout": false,
+            "dropout_rate": 0.10744128854758885,
+            "decay_steps": 1866,
+            "decay_rate": 0.9330298341388583
+        }
+    },
+    {
+        "target": -0.00030628096746710407,
+        "params": {
+            "neurons": 58,
+            "activation": "elu",
+            "optimizer": "Adam",
+            "learning_rate": 0.05595812715438819,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.0006234534229437094,
+            "decay_steps": 2516,
+            "decay_rate": 0.9398148120033454
+        }
+    },
+    {
+        "target": -0.0002474006445908366,
+        "params": {
+            "neurons": 19,
+            "activation": "sigmoid",
+            "optimizer": "Adamax",
+            "learning_rate": 0.058406347093342595,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 0,
+            "dropout": false,
+            "dropout_rate": 0.24050159794085704,
+            "decay_steps": 768,
+            "decay_rate": 0.9968243437329252
+        }
+    },
+    {
+        "target": -0.00023251783672697084,
+        "params": {
+            "neurons": 52,
+            "activation": "sigmoid",
+            "optimizer": "SGD",
+            "learning_rate": 0.04978266709226376,
+            "normalize": true,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.015562103691052409,
+            "decay_steps": 1523,
+            "decay_rate": 0.9772473273439319
+        }
+    },
+    {
+        "target": -0.0002501333897926419,
+        "params": {
+            "neurons": 90,
+            "activation": "sigmoid",
+            "optimizer": "Adamax",
+            "learning_rate": 0.07870861100369453,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 0,
+            "dropout": false,
+            "dropout_rate": 0.2315497321847505,
+            "decay_steps": 1482,
+            "decay_rate": 0.9087182611730161
+        }
+    },
+    {
+        "target": -0.0002495697735993984,
+        "params": {
+            "neurons": 55,
+            "activation": "sigmoid",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.037407758892366784,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 0,
+            "dropout": true,
+            "dropout_rate": 0.20586785582003383,
+            "decay_steps": 2495,
+            "decay_rate": 0.9898116672330896
+        }
+    },
+    {
+        "target": -0.00029231231190870164,
+        "params": {
+            "neurons": 26,
+            "activation": "sigmoid",
+            "optimizer": "Adam",
+            "learning_rate": 0.01703721532091085,
+            "normalize": true,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.2954453679336147,
+            "decay_steps": 2180,
+            "decay_rate": 0.9567869241624222
+        }
+    },
+    {
+        "target": -0.00029426515636263816,
+        "params": {
+            "neurons": 48,
+            "activation": "sigmoid",
+            "optimizer": "Adam",
+            "learning_rate": 0.013645007888198587,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 1,
+            "dropout": true,
+            "dropout_rate": 0.09760239592885801,
+            "decay_steps": 1978,
+            "decay_rate": 0.9233133199277899
+        }
+    },
+    {
+        "target": -0.0002736986039092722,
+        "params": {
+            "neurons": 44,
+            "activation": "relu",
+            "optimizer": "RMSprop",
+            "learning_rate": 0.029587518159986774,
+            "normalize": true,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.14895553429279712,
+            "decay_steps": 769,
+            "decay_rate": 0.9325018237653184
+        }
+    },
+    {
+        "target": -0.003532755169083869,
+        "params": {
+            "neurons": 17,
+            "activation": "tanh",
+            "optimizer": "RMSprop",
+            "learning_rate": 0.08319985797226274,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.09611382764141625,
+            "decay_steps": 1847,
+            "decay_rate": 0.9536651216542662
+        }
+    },
+    {
+        "target": -0.0002979702928599203,
+        "params": {
+            "neurons": 94,
+            "activation": "elu",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.08968422141337218,
+            "normalize": true,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 2,
+            "dropout": false,
+            "dropout_rate": 0.05343172044596304,
+            "decay_steps": 1097,
+            "decay_rate": 0.949744340843057
+        }
+    },
+    {
+        "target": -0.0002515003462242516,
+        "params": {
+            "neurons": 14,
+            "activation": "softplus",
+            "optimizer": "Nadam",
+            "learning_rate": 0.06117745287425625,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 2,
+            "dropout": false,
+            "dropout_rate": 0.08003086876586156,
+            "decay_steps": 2887,
+            "decay_rate": 0.9940665805599012
+        }
+    },
+    {
+        "target": -0.00029684011855891,
+        "params": {
+            "neurons": 80,
+            "activation": "softplus",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.04651520294106029,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 2,
+            "dropout": true,
+            "dropout_rate": 0.26543689561335404,
+            "decay_steps": 246,
+            "decay_rate": 0.9778716112321062
+        }
+    },
+    {
+        "target": -0.00025453213211347524,
+        "params": {
+            "neurons": 83,
+            "activation": "softplus",
+            "optimizer": "RMSprop",
+            "learning_rate": 0.08088493778211223,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.189457053365673,
+            "decay_steps": 1880,
+            "decay_rate": 0.9284794118496273
+        }
+    },
+    {
+        "target": -0.00024259648312258407,
+        "params": {
+            "neurons": 35,
+            "activation": "sigmoid",
+            "optimizer": "Nadam",
+            "learning_rate": 0.004352137785048221,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 2,
+            "dropout": false,
+            "dropout_rate": 0.08009137475482735,
+            "decay_steps": 1785,
+            "decay_rate": 0.9891304852958993
+        }
+    },
+    {
+        "target": -0.0003454242412002043,
+        "params": {
+            "neurons": 46,
+            "activation": "elu",
+            "optimizer": "Adamax",
+            "learning_rate": 0.07181338813832427,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.052079320921454564,
+            "decay_steps": 1856,
+            "decay_rate": 0.9267199991812924
+        }
+    },
+    {
+        "target": -0.00023315645525473876,
+        "params": {
+            "neurons": 96,
+            "activation": "softplus",
+            "optimizer": "RMSprop",
+            "learning_rate": 0.06787386977877086,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 1,
+            "dropout": true,
+            "dropout_rate": 0.22903278926915394,
+            "decay_steps": 56,
+            "decay_rate": 0.9781433638707513
+        }
+    },
+    {
+        "target": -0.00023743942492114118,
+        "params": {
+            "neurons": 13,
+            "activation": "sigmoid",
+            "optimizer": "Adamax",
+            "learning_rate": 0.03263485658445087,
+            "normalize": true,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 2,
+            "dropout": true,
+            "dropout_rate": 0.12793170383364708,
+            "decay_steps": 2503,
+            "decay_rate": 0.9169242376401971
+        }
+    },
+    {
+        "target": -0.0002749782614843623,
+        "params": {
+            "neurons": 36,
+            "activation": "sigmoid",
+            "optimizer": "Nadam",
+            "learning_rate": 0.06478113935059789,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.13774427033121892,
+            "decay_steps": 1300,
+            "decay_rate": 0.980653182221442
+        }
+    },
+    {
+        "target": -0.0002760102044748037,
+        "params": {
+            "neurons": 73,
+            "activation": "softplus",
+            "optimizer": "Adamax",
+            "learning_rate": 0.014536963013725564,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 2,
+            "dropout": false,
+            "dropout_rate": 0.24013188897508986,
+            "decay_steps": 1846,
+            "decay_rate": 0.9353361184479426
+        }
+    },
+    {
+        "target": -0.00024151911292091049,
+        "params": {
+            "neurons": 12,
+            "activation": "softplus",
+            "optimizer": "Adamax",
+            "learning_rate": 0.0832408162663579,
+            "normalize": true,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 1,
+            "dropout": true,
+            "dropout_rate": 0.23709976941808192,
+            "decay_steps": 2504,
+            "decay_rate": 0.9720131444589056
+        }
+    },
+    {
+        "target": -0.0005468125726872518,
+        "params": {
+            "neurons": 87,
+            "activation": "elu",
+            "optimizer": "Nadam",
+            "learning_rate": 0.03687270199147484,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.053174797319736296,
+            "decay_steps": 1520,
+            "decay_rate": 0.9008838004197142
+        }
+    },
+    {
+        "target": -0.0013915656556332417,
+        "params": {
+            "neurons": 22,
+            "activation": "tanh",
+            "optimizer": "RMSprop",
+            "learning_rate": 0.0762756008718035,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 0,
+            "dropout": true,
+            "dropout_rate": 0.15057560242728327,
+            "decay_steps": 2538,
+            "decay_rate": 0.905132690795618
+        }
+    },
+    {
+        "target": -0.0002466271687061297,
+        "params": {
+            "neurons": 26,
+            "activation": "linear",
+            "optimizer": "Nadam",
+            "learning_rate": 0.08403592040162021,
+            "normalize": false,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.1910876807193793,
+            "decay_steps": 2475,
+            "decay_rate": 0.9410502715968503
+        }
+    },
+    {
+        "target": -0.00023153809890204385,
+        "params": {
+            "neurons": 52,
+            "activation": "elu",
+            "optimizer": "Ftrl",
+            "learning_rate": 0.07344271075976136,
+            "normalize": true,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 1,
+            "dropout": true,
+            "dropout_rate": 0.11598518519521124,
+            "decay_steps": 183,
+            "decay_rate": 0.9345058984668025
+        }
+    },
+    {
+        "target": -0.00023341855814589923,
+        "params": {
+            "neurons": 49,
+            "activation": "softplus",
+            "optimizer": "Ftrl",
+            "learning_rate": 0.0630968444340813,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 2,
+            "dropout": true,
+            "dropout_rate": 0.004823456575770613,
+            "decay_steps": 219,
+            "decay_rate": 0.9324786608497501
+        }
+    },
+    {
+        "target": -0.00024157406489679198,
+        "params": {
+            "neurons": 80,
+            "activation": "sigmoid",
+            "optimizer": "Nadam",
+            "learning_rate": 0.05822253442797722,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 1,
+            "dropout": true,
+            "dropout_rate": 0.29547685016538144,
+            "decay_steps": 205,
+            "decay_rate": 0.9067390045029634
+        }
+    },
+    {
+        "target": -0.0006314571614413952,
+        "params": {
+            "neurons": 12,
+            "activation": "tanh",
+            "optimizer": "SGD",
+            "learning_rate": 0.0036132593996982478,
+            "normalize": true,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 2,
+            "dropout": true,
+            "dropout_rate": 0.16549035100563675,
+            "decay_steps": 2608,
+            "decay_rate": 0.9147840273958188
+        }
+    },
+    {
+        "target": -0.0002422493584456938,
+        "params": {
+            "neurons": 51,
+            "activation": "tanh",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.06672239255547195,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 2,
+            "dropout": true,
+            "dropout_rate": 0.12058732466208127,
+            "decay_steps": 1490,
+            "decay_rate": 0.9051334022843901
+        }
+    },
+    {
+        "target": -0.0002432226085650311,
+        "params": {
+            "neurons": 18,
+            "activation": "sigmoid",
+            "optimizer": "Adam",
+            "learning_rate": 0.007775046021671512,
+            "normalize": true,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.19849965371829056,
+            "decay_steps": 1512,
+            "decay_rate": 0.9824750629264721
+        }
+    },
+    {
+        "target": -0.00027414221631725697,
+        "params": {
+            "neurons": 28,
+            "activation": "tanh",
+            "optimizer": "Adamax",
+            "learning_rate": 0.06338063114503688,
+            "normalize": true,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.1672139357979517,
+            "decay_steps": 1544,
+            "decay_rate": 0.9639314310120388
+        }
+    },
+    {
+        "target": -0.0002319325428662665,
+        "params": {
+            "neurons": 66,
+            "activation": "tanh",
+            "optimizer": "RMSprop",
+            "learning_rate": 0.04231051880347656,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 0,
+            "dropout": false,
+            "dropout_rate": 0.026178223884734318,
+            "decay_steps": 152,
+            "decay_rate": 0.927075151245503
+        }
+    },
+    {
+        "target": -0.00023603106232195702,
+        "params": {
+            "neurons": 96,
+            "activation": "sigmoid",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.08708103037363756,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 1,
+            "dropout": true,
+            "dropout_rate": 0.17450658585147602,
+            "decay_steps": 171,
+            "decay_rate": 0.966894333741361
+        }
+    },
+    {
+        "target": -0.000253064787234976,
+        "params": {
+            "neurons": 97,
+            "activation": "elu",
+            "optimizer": "Nadam",
+            "learning_rate": 0.08987910019104403,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 1,
+            "dropout": true,
+            "dropout_rate": 0.29167527309529956,
+            "decay_steps": 137,
+            "decay_rate": 0.9537070277675643
+        }
+    },
+    {
+        "target": -0.00029050087000477597,
+        "params": {
+            "neurons": 64,
+            "activation": "softplus",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.06435276650418217,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 1,
+            "dropout": true,
+            "dropout_rate": 0.2719649416080894,
+            "decay_steps": 116,
+            "decay_rate": 0.9468558031751829
+        }
+    },
+    {
+        "target": -0.0002454355921168709,
+        "params": {
+            "neurons": 101,
+            "activation": "sigmoid",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.06013879956287507,
+            "normalize": false,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.042266077073319475,
+            "decay_steps": 88,
+            "decay_rate": 0.9919563789658642
+        }
+    },
+    {
+        "target": -0.00023694451916188975,
+        "params": {
+            "neurons": 70,
+            "activation": "sigmoid",
+            "optimizer": "SGD",
+            "learning_rate": 0.05720808649534481,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.005983642454528304,
+            "decay_steps": 75,
+            "decay_rate": 0.9229088782822656
+        }
+    },
+    {
+        "target": -0.0002641529808189119,
+        "params": {
+            "neurons": 63,
+            "activation": "linear",
+            "optimizer": "Adamax",
+            "learning_rate": 0.013828457941585935,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.23345493815101992,
+            "decay_steps": 1454,
+            "decay_rate": 0.9774422868351041
+        }
+    },
+    {
+        "target": -0.00023424161939903054,
+        "params": {
+            "neurons": 21,
+            "activation": "relu",
+            "optimizer": "Adamax",
+            "learning_rate": 0.07116592808809812,
+            "normalize": false,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 3,
+            "dropout": true,
+            "dropout_rate": 0.05351197781867344,
+            "decay_steps": 1468,
+            "decay_rate": 0.911694650609467
+        }
+    },
+    {
+        "target": -0.00024469476264304653,
+        "params": {
+            "neurons": 64,
+            "activation": "relu",
+            "optimizer": "Adamax",
+            "learning_rate": 0.0142111554089088,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 2,
+            "dropout": false,
+            "dropout_rate": 0.20836381426397968,
+            "decay_steps": 39,
+            "decay_rate": 0.9353549218027482
+        }
+    },
+    {
+        "target": -0.00023702554122745798,
+        "params": {
+            "neurons": 19,
+            "activation": "sigmoid",
+            "optimizer": "Ftrl",
+            "learning_rate": 0.06077937307559326,
+            "normalize": false,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 2,
+            "dropout": true,
+            "dropout_rate": 0.2778876515825747,
+            "decay_steps": 241,
+            "decay_rate": 0.9825687447030067
+        }
+    },
+    {
+        "target": -0.00022862891362936244,
+        "params": {
+            "neurons": 45,
+            "activation": "linear",
+            "optimizer": "RMSprop",
+            "learning_rate": 0.056249281447366156,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 1,
+            "dropout": true,
+            "dropout_rate": 0.17329154929514423,
+            "decay_steps": 263,
+            "decay_rate": 0.906763827674188
+        }
+    },
+    {
+        "target": -0.00023301591297500388,
+        "params": {
+            "neurons": 12,
+            "activation": "softplus",
+            "optimizer": "Ftrl",
+            "learning_rate": 0.0949488541095516,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 2,
+            "dropout": false,
+            "dropout_rate": 0.15741628674745534,
+            "decay_steps": 279,
+            "decay_rate": 0.952598616233518
+        }
+    },
+    {
+        "target": -0.0002627659292113667,
+        "params": {
+            "neurons": 39,
+            "activation": "linear",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.04426521353151416,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 0,
+            "dropout": true,
+            "dropout_rate": 0.22644786205228407,
+            "decay_steps": 303,
+            "decay_rate": 0.9240322659218906
+        }
+    },
+    {
+        "target": -0.000256807440835551,
+        "params": {
+            "neurons": 98,
+            "activation": "softplus",
+            "optimizer": "Ftrl",
+            "learning_rate": 0.046773659871614186,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 2,
+            "dropout": true,
+            "dropout_rate": 0.143580568393374,
+            "decay_steps": 18,
+            "decay_rate": 0.9360049887755256
+        }
+    },
+    {
+        "target": -0.0017601844541106644,
+        "params": {
+            "neurons": 34,
+            "activation": "sigmoid",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.07301133309653005,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 0,
+            "dropout": true,
+            "dropout_rate": 0.08254551483295706,
+            "decay_steps": 64,
+            "decay_rate": 0.9420249758075802
+        }
+    },
+    {
+        "target": -0.2572122072570762,
+        "params": {
+            "neurons": 72,
+            "activation": "linear",
+            "optimizer": "Adam",
+            "learning_rate": 0.06545907432822033,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.06438614108600758,
+            "decay_steps": 288,
+            "decay_rate": 0.981826711590761
+        }
+    },
+    {
+        "target": -0.00022911296732730507,
+        "params": {
+            "neurons": 16,
+            "activation": "elu",
+            "optimizer": "Nadam",
+            "learning_rate": 0.025664250337126767,
+            "normalize": true,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 0,
+            "dropout": true,
+            "dropout_rate": 0.3,
+            "decay_steps": 318,
+            "decay_rate": 0.9
+        }
+    },
+    {
+        "target": -0.0005593681692558562,
+        "params": {
+            "neurons": 109,
+            "activation": "softplus",
+            "optimizer": "Adadelta",
+            "learning_rate": 0.07384507376499604,
+            "normalize": true,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.3,
+            "decay_steps": 227,
+            "decay_rate": 0.999
+        }
+    },
+    {
+        "target": -0.000233050243703523,
+        "params": {
+            "neurons": 22,
+            "activation": "tanh",
+            "optimizer": "RMSprop",
+            "learning_rate": 0.07953590507403217,
+            "normalize": false,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 0,
+            "dropout": false,
+            "dropout_rate": 0.193507488498034,
+            "decay_steps": 116,
+            "decay_rate": 0.9345920138038403
+        }
+    },
+    {
+        "target": -127.53084630180358,
+        "params": {
+            "neurons": 55,
+            "activation": "linear",
+            "optimizer": "Nadam",
+            "learning_rate": 0.036879825966093585,
+            "normalize": false,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 2,
+            "dropout": true,
+            "dropout_rate": 0.12175250868842534,
+            "decay_steps": 1118,
+            "decay_rate": 0.9598338014704499
+        }
+    },
+    {
+        "target": -0.00032091754490876513,
+        "params": {
+            "neurons": 85,
+            "activation": "relu",
+            "optimizer": "Adam",
+            "learning_rate": 0.1,
+            "normalize": false,
+            "layers_before_dropout": 2,
+            "layers_after_dropout": 1,
+            "dropout": false,
+            "dropout_rate": 0.08163210483684129,
+            "decay_steps": 1053,
+            "decay_rate": 0.9243398336496044
+        }
+    },
+    {
+        "target": -0.00023522308362800646,
+        "params": {
+            "neurons": 37,
+            "activation": "relu",
+            "optimizer": "Adam",
+            "learning_rate": 0.0579433785886824,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 0,
+            "dropout": false,
+            "dropout_rate": 0.17592805023051467,
+            "decay_steps": 1044,
+            "decay_rate": 0.9172668903307049
+        }
+    },
+    {
+        "target": -288304.7199429179,
+        "params": {
+            "neurons": 120,
+            "activation": "linear",
+            "optimizer": "Adam",
+            "learning_rate": 0.1,
+            "normalize": true,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.0,
+            "decay_steps": 1082,
+            "decay_rate": 0.999
+        }
+    },
+    {
+        "target": -0.00022761762963292498,
+        "params": {
+            "neurons": 83,
+            "activation": "relu",
+            "optimizer": "SGD",
+            "learning_rate": 0.1,
+            "normalize": true,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 0,
+            "dropout": true,
+            "dropout_rate": 0.23625228635423828,
+            "decay_steps": 1115,
+            "decay_rate": 0.9
+        }
+    },
+    {
+        "target": -0.0002312841411239624,
+        "params": {
+            "neurons": 73,
+            "activation": "linear",
+            "optimizer": "Adam",
+            "learning_rate": 1e-05,
+            "normalize": true,
+            "layers_before_dropout": 3,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.3,
+            "decay_steps": 1094,
+            "decay_rate": 0.999
+        }
+    },
+    {
+        "target": -0.00023381846358824662,
+        "params": {
+            "neurons": 69,
+            "activation": "relu",
+            "optimizer": "Adamax",
+            "learning_rate": 0.1,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 0,
+            "dropout": true,
+            "dropout_rate": 0.11408220235029382,
+            "decay_steps": 1025,
+            "decay_rate": 0.9
+        }
+    },
+    {
+        "target": -10000000000.0,
+        "params": {
+            "neurons": 46,
+            "activation": "relu",
+            "optimizer": "SGD",
+            "learning_rate": 0.1,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 0,
+            "dropout": false,
+            "dropout_rate": 0.3,
+            "decay_steps": 1819,
+            "decay_rate": 0.999
+        }
+    },
+    {
+        "target": -0.0007272292207475212,
+        "params": {
+            "neurons": 28,
+            "activation": "elu",
+            "optimizer": "Adamax",
+            "learning_rate": 1e-05,
+            "normalize": false,
+            "layers_before_dropout": 1,
+            "layers_after_dropout": 3,
+            "dropout": false,
+            "dropout_rate": 0.0,
+            "decay_steps": 1761,
+            "decay_rate": 0.9815148406977027
+        }
+    }
+]

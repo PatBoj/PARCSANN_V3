@@ -1,0 +1,13 @@
+{
+    "neurons": 24,
+    "activation": "softplus",
+    "optimizer": "RMSprop",
+    "learning_rate": 0.07023968209507851,
+    "normalize": true,
+    "layers_before_dropout": 3,
+    "layers_after_dropout": 0,
+    "dropout": true,
+    "dropout_rate": 0.1929758718116465,
+    "decay_steps": 1094,
+    "decay_rate": 0.9449200209077607
+}

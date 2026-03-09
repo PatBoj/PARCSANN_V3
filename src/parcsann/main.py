@@ -3,13 +3,15 @@ from parcsann.read_data.nuclear_code_data import CoreData
 from parcsann.config import load_config
 from pathlib import Path
 
-config_dir = Path("configs/experiment_1")
+for experiment_dir in ["experiment_1", "experiment_2", "experiment_3"]:
 
-for cfg_path in [config_dir / f"config_{i}.yaml" for i in range (1, 7)]:
-    config = load_config(cfg_path)
+    config_dir = "configs" / experiment_dir
 
-    core_data = CoreData(config)
-    core_data.process_data()
+    for cfg_path in [config_dir / f"config_{i}.yaml" for i in range (1, 7)]:
+        config = load_config(cfg_path)
 
-    tune_hyperparameters = TuneHyperparametes(core_data, experiment_dir="experiment_1")
-    tune_hyperparameters.run(config)
+        core_data = CoreData(config)
+        core_data.process_data()
+
+        tune_hyperparameters = TuneHyperparametes(core_data, experiment_dir=experiment_dir)
+        tune_hyperparameters.run(config)

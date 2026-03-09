@@ -1,0 +1,9 @@
+INPUT COLUMNS:
+ppf_max
+
+OUTPUT COLUMNS:
+ppf_max
+
+USE MONOCORES: True
+USE ONE HOT ENCODING: True
+

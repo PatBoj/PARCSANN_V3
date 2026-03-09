@@ -1,0 +1,13 @@
+{
+    "neurons": 45,
+    "activation": "softplus",
+    "optimizer": "Ftrl",
+    "learning_rate": 0.09871824750471551,
+    "normalize": false,
+    "layers_before_dropout": 3,
+    "layers_after_dropout": 2,
+    "dropout": true,
+    "dropout_rate": 0.05404615815619302,
+    "decay_steps": 2257,
+    "decay_rate": 0.9630683609612782
+}

@@ -1,0 +1,9 @@
+INPUT COLUMNS:
+cycle_length_in_days
+
+OUTPUT COLUMNS:
+cycle_length_in_days
+
+USE MONOCORES: True
+USE ONE HOT ENCODING: False
+

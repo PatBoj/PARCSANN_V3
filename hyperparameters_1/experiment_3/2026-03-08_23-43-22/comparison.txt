@@ -1,0 +1,2 @@
+Linear model mse: 0.00, and neural network mse: 0.00, neural network mse is better: -442.69%
+Linear model mape: 10.919%, and neural network mape: 26.584%, neural network mape is better: -143.46%

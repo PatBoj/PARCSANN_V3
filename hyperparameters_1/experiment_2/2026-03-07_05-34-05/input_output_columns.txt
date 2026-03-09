@@ -1,0 +1,11 @@
+INPUT COLUMNS:
+cycle_length_in_days
+ppf_max
+rho_max
+
+OUTPUT COLUMNS:
+ppf_max
+
+USE MONOCORES: True
+USE ONE HOT ENCODING: True
+

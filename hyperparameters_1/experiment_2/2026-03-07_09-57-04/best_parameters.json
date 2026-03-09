@@ -1,0 +1,13 @@
+{
+    "neurons": 65,
+    "activation": "elu",
+    "optimizer": "SGD",
+    "learning_rate": 0.04644412216223177,
+    "normalize": true,
+    "layers_before_dropout": 2,
+    "layers_after_dropout": 1,
+    "dropout": true,
+    "dropout_rate": 0.10560268090337975,
+    "decay_steps": 98,
+    "decay_rate": 0.9269929953733826
+}

@@ -270,7 +270,7 @@ class TuneHyperparametes:
             model = nn
             model.fit(self.X_train, self.y_train, callbacks=[es])
         
-        y_pred = nn.predict(self.X_test)
+        y_pred = model.predict(self.X_test)
 
         return {
             # "model": nn,
@@ -285,6 +285,8 @@ class TuneHyperparametes:
             "y_pred_nn": y_pred_nn,
             "y_pred_lr": y_pred_lr,
         })
+
+        df.to_csv(self.output_dir / "predictions.csv", index=False)
         
         df["rad_nn"] = np.abs(df["y_test"] - df["y_pred_nn"]) / (np.abs(df["y_test"]))
         df["rad_lr"] = np.abs(df["y_test"] - df["y_pred_lr"]) / (np.abs(df["y_test"]))
@@ -336,10 +338,10 @@ class TuneHyperparametes:
         self.create_and_save_plot(nn_output["y_pred"].flatten(), linear_output["y_pred"].flatten())
 
         msg = (
-            f"Linear model mse: {linear_output["mse"]:.2f}, and neural network mse: {nn_output["mse"]:.2f}, "
-            f"neural network mse is better: {(linear_output["mse"] - nn_output["mse"]) / linear_output["mse"]:.2%}\n"
-            f"Linear model mape: {linear_output["mape"]:.3%}, and neural network mape: {nn_output["mape"]:.3%}, "
-            f"neural network mape is better: {(linear_output["mape"] - nn_output["mape"]) / linear_output["mape"]:.2%}"
+            f"Linear model mse: {linear_output["mse"]:.3g}, and neural network mse: {nn_output["mse"]:.3g}, "
+            f"neural network mse is better: {100*(linear_output["mse"] - nn_output["mse"]) / linear_output["mse"]:.3g}%\n"
+            f"Linear model mape: {100*linear_output["mape"]:.3g}%, and neural network mape: {100*nn_output["mape"]:.3g}%, "
+            f"neural network mape is better: {100*(linear_output["mape"] - nn_output["mape"]) / linear_output["mape"]:.3g}%"
         )
 
         logger.info(msg)
@@ -373,3 +375,6 @@ class TuneHyperparametes:
         self.save_best_parameters()
         self.save_input_output_columns(parcasnn_config)
         self.compare_scores()
+
+
+# I HAVE TO CREATE A FUNCTION TO COMPARE EVOLUTIONS

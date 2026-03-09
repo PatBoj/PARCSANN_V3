@@ -1,0 +1,13 @@
+{
+    "neurons": 81,
+    "activation": "sigmoid",
+    "optimizer": "Adamax",
+    "learning_rate": 0.09009006453034041,
+    "normalize": true,
+    "layers_before_dropout": 1,
+    "layers_after_dropout": 0,
+    "dropout": true,
+    "dropout_rate": 0.13677005733032738,
+    "decay_steps": 827,
+    "decay_rate": 0.9536472537039353
+}
